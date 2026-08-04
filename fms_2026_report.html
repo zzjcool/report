@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FMS 2026 深度分析报告 · 金融视角</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: 'hsl(0 0% 100%)',
+        fg: 'hsl(240 10% 3.9%)',
+        muted: 'hsl(240 4.8% 95.9%)',
+        'muted-fg': 'hsl(240 3.8% 46.1%)',
+        border: 'hsl(240 5.9% 90%)',
+        card: 'hsl(0 0% 100%)',
+        primary: 'hsl(240 5.9% 10%)',
+        'primary-fg': 'hsl(0 0% 98%)',
+        accent: 'hsl(240 4.8% 95.9%)',
+      },
+      fontFamily: {
+        sans: ['ui-sans-serif','system-ui','-apple-system','Segoe UI','Roboto','Helvetica','Arial','PingFang SC','Microsoft YaHei','sans-serif'],
+        mono: ['ui-monospace','SFMono-Regular','Menlo','monospace'],
+      },
+    }
+  }
+}
+</script>
+<style>
+  :root { --radius: 0.625rem; }
+  body { font-feature-settings: "rlig" 1, "calt" 1; }
+  .card { @apply bg-card text-fg border border-border rounded-lg; }
+  .prose-h2 { @apply text-2xl font-semibold tracking-tight text-fg; }
+  .prose-h3 { @apply text-lg font-semibold tracking-tight text-fg; }
+  .badge { @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors; }
+  .section-anchor { scroll-margin-top: 5rem; }
+  /* 表格 */
+  table { border-collapse: separate; border-spacing: 0; }
+  /* 细分隔线 */
+  hr.soft { border: 0; border-top: 1px solid hsl(240 5.9% 90%); }
+  /* 渐变标题底 */
+  .hero-grad { background: radial-gradient(1200px 500px at 80% -10%, hsl(220 90% 96%), transparent), radial-gradient(800px 400px at 0% 0%, hsl(250 80% 97%), transparent); }
+  /* 锚点导航高亮 */
+  .nav-link.active { color: hsl(240 5.9% 10%); font-weight: 600; }
+  /* 数字增大 */
+  .stat-num { font-variant-numeric: tabular-nums; }
+  ::selection { background: hsl(240 5.9% 10%); color: white; }
+</style>
+</head>
+<body class="bg-bg text-fg font-sans antialiased">
+
+<!-- ============ 顶部导航 ============ -->
+<header class="sticky top-0 z-40 w-full border-b border-border bg-bg/80 backdrop-blur">
+  <div class="mx-auto flex h-14 max-w-6xl items-center px-4">
+    <a href="#top" class="mr-6 flex items-center gap-2 font-semibold">
+      <span class="inline-block h-2.5 w-2.5 rounded-sm bg-fg"></span>
+      FMS 2026 · 分析报告
+    </a>
+    <nav class="hidden flex-1 items-center gap-5 text-sm text-muted-fg md:flex">
+      <a href="#overview" class="hover:text-fg">概览</a>
+      <a href="#signals" class="hover:text-fg">核心信号</a>
+      <a href="#data" class="hover:text-fg">数据画像</a>
+      <a href="#spotlight" class="hover:text-fg">亮点议程</a>
+      <a href="#themes" class="hover:text-fg">技术主题</a>
+      <a href="#risks" class="hover:text-fg">风险与警示</a>
+      <a href="#watchlist" class="hover:text-fg">关注清单</a>
+    </nav>
+    <div class="ml-auto text-xs text-muted-fg">2026.08.04–06 · Santa Clara</div>
+  </div>
+</header>
+<a id="top"></a>
+
+<!-- ============ Hero ============ -->
+<section class="hero-grad border-b border-border">
+  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
+    <div class="flex items-center gap-2 text-xs font-medium text-muted-fg">
+      <span class="badge border-border bg-card">会议分析</span>
+      <span class="badge border-border bg-card">金融视角</span>
+      <span>·</span>
+      <span>仅基于公开议程</span>
+    </div>
+    <h1 class="mt-6 text-4xl font-bold tracking-tight text-fg md:text-6xl">
+      Future of Memory<br class="hidden md:block"> &amp; Storage 2026
+    </h1>
+    <p class="mt-5 max-w-2xl text-lg text-muted-fg md:text-xl">
+      一场由 350+ 全球内存与存储行业领袖登台的产业风向会议。
+      本报告从议程结构、市场分析观点、关键技术主题与主旨演讲四个维度，
+      提炼可能对未来股市产生实质影响的信号。
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3 text-sm">
+      <div class="card px-4 py-3">
+        <div class="text-xs text-muted-fg">会议规模</div>
+        <div class="mt-0.5 text-lg font-semibold stat-num">338 个议程项</div>
+      </div>
+      <div class="card px-4 py-3">
+        <div class="text-xs text-muted-fg">主旨演讲</div>
+        <div class="mt-0.5 text-lg font-semibold stat-num">14 场 Keynote</div>
+      </div>
+      <div class="card px-4 py-3">
+        <div class="text-xs text-muted-fg">技术专题</div>
+        <div class="mt-0.5 text-lg font-semibold stat-num">23 个 Track</div>
+      </div>
+      <div class="card px-4 py-3">
+        <div class="text-xs text-muted-fg">核心结论</div>
+        <div class="mt-0.5 text-lg font-semibold">内存超级周期</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 概览 ============ -->
+<section id="overview" class="section-anchor border-b border-border">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <div class="grid gap-10 md:grid-cols-3">
+      <div class="md:col-span-1">
+        <div class="text-xs font-medium text-muted-fg">01 · 概览</div>
+        <h2 class="mt-2 prose-h2">会议是什么</h2>
+        <p class="mt-3 text-sm text-muted-fg leading-6">
+          FMS（Future of Memory and Storage）是存储与内存行业年度旗舰会议，
+          汇聚三星、SK 海力士、美光、铠侠、闪迪、NVIDIA、AMD、Intel 等核心厂商，
+          以及 TrendForce、IDC、Yole Group、Objective Analysis 等顶级分析机构。
+          其议程方向被视为行业未来 1–3 年技术路线的风向标。
+        </p>
+      </div>
+      <div class="md:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="card p-5">
+          <div class="text-xs text-muted-fg">第 1 天 · 8/4</div>
+          <div class="mt-2 text-3xl font-bold stat-num">97</div>
+          <div class="mt-1 text-xs text-muted-fg">议程项 · 偏市场与 Keynote</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-muted-fg">第 2 天 · 8/5</div>
+          <div class="mt-2 text-3xl font-bold stat-num">125</div>
+          <div class="mt-1 text-xs text-muted-fg">议程项 · 最密集</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-muted-fg">第 3 天 · 8/6</div>
+          <div class="mt-2 text-3xl font-bold stat-num">116</div>
+          <div class="mt-1 text-xs text-muted-fg">议程项 · 收束与前瞻</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-muted-fg">分析机构观点</div>
+          <div class="mt-2 text-3xl font-bold stat-num">13</div>
+          <div class="mt-1 text-xs text-muted-fg">场 · 市场研判类</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 card p-6">
+      <h3 class="prose-h3">本次会议的总体调性</h3>
+      <p class="mt-3 text-sm leading-7 text-muted-fg">
+        全场议程围绕一个中心命题展开——<span class="font-semibold text-fg">AI 推理正在把"内存与存储"从配角变成瓶颈，也变成定价权</span>。
+        从训练到推理、从云端到边缘、从 HBM 到 SSD，几乎每一场技术演讲都在论证同一组经济事实：
+        内存/存储产能正在被 AI 系统性地吸收，供需紧张已从 HBM 蔓延至 NAND 与 HDD，
+        行业正在从"周期品"重新定价为"结构性稀缺的战略资源"。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 核心信号 ============ -->
+<section id="signals" class="section-anchor border-b border-border bg-muted/30">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <div class="text-xs font-medium text-muted-fg">02 · 核心信号</div>
+    <h2 class="mt-2 prose-h2">五条对股市最有意义的判断</h2>
+    <p class="mt-2 text-sm text-muted-fg max-w-2xl">以下结论来自对全部 338 个议程项与 14 场主旨演讲的交叉阅读，按对资本市场的影响力排序。</p>
+
+    <div class="mt-8 grid gap-4 md:grid-cols-2">
+      <!-- 信号1 -->
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <span class="badge bg-fg text-primary-fg border-fg">最高影响力</span>
+          <span class="text-xs text-muted-fg">来源 · TrendForce / Yole / Objective Analysis</span>
+        </div>
+        <h3 class="mt-3 text-base font-semibold">① 内存进入"结构性超级周期"（2026–2028）</h3>
+        <p class="mt-2 text-sm leading-6 text-muted-fg">
+          TrendForce 提出市场正发生"解耦"：传统由 PC 与手机驱动的周期，
+          正被以 AI 基础设施为中心的结构性超级周期取代。关键机制是
+          <span class="font-medium text-fg">晶圆产能从低利润消费级 DRAM/NAND 转向高价值 HBM4/4e 与超高密度 NAND，制造持续性的供给侧瓶颈</span>。
+          这意味着此轮内存涨价并非短期博弈，而是产能结构的重排。
+        </p>
+      </div>
+      <!-- 信号2 -->
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <span class="badge bg-fg text-primary-fg border-fg">最高影响力</span>
+          <span class="text-xs text-muted-fg">来源 · Yole / IBM / Meta</span>
+        </div>
+        <h3 class="mt-3 text-base font-semibold">② "AI 吃内存"已向下游消费市场蔓延</h3>
+        <p class="mt-2 text-sm leading-6 text-muted-fg">
+          Yole 与 IBM 的市场分析一致指出：AI 服务器需求吸收全球内存产能，
+          供应紧张<span class="font-medium text-fg">正沿供应链向消费电子、汽车、移动端层层传导</span>。
+          近线 HDD 交期已超 52 周，用户被迫提前一年多锁定产能——这是硬件/存储板块的供给侧景气信号，
+          但也意味着下游整机厂的成本压力上升。
+        </p>
+      </div>
+      <!-- 信号3 -->
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <span class="badge border-border bg-card">重要拐点</span>
+          <span class="text-xs text-muted-fg">来源 · Samsung / SK hynix / Micron</span>
+        </div>
+        <h3 class="mt-3 text-base font-semibold">③ HBM 是当下核心，HBF 是下一个增长极</h3>
+        <p class="mt-2 text-sm leading-6 text-muted-fg">
+          HBM 被三星、SK 海力士、美光反复确认为 AI 训练/推理的绝对核心；
+          同时 HBF（高带宽闪存）被会议力推为<span class="font-medium text-fg">解决 HBM 容量瓶颈的下一层</span>，
+          多家架构演讲（ScaleFlux、Rambus）围绕"降低 HBM 每 token 成本"展开。
+          投资含义：HBM 三巨头受益确定，HBF 路线先发者将获得估值溢价。
+        </p>
+      </div>
+      <!-- 信号4 -->
+      <div class="card p-6">
+        <div class="flex items-start justify-between">
+          <span class="badge border-border bg-card">重要拐点</span>
+          <span class="text-xs text-muted-fg">来源 · KIOXIA / Sandisk / Scality / IBM</span>
+        </div>
+        <h3 class="mt-3 text-base font-semibold">④ QLC SSD 正在系统性替代 HDD</h3>
+        <p class="mt-2 text-sm leading-6 text-muted-fg">
+          多场演讲论证 QLC SSD 正从 HDD 手中夺取"近线存储"市场——
+          容量已达 61TB+，逼近与高容量 HDD 的<span class="font-medium text-fg">战略交叉点</span>，
+          叠加 HDD 产能不足与 AI 数据爆炸，超大规模厂商加速采用 QLC 承载温/冷数据。
+          对 HDD 厂商（希捷、西数、东芝）是长期威胁，对 QLC 阵营（铠侠、闪迪、Solidigm、三星）是增长。
+        </p>
+      </div>
+      <!-- 信号5 -->
+      <div class="card p-6 md:col-span-2">
+        <div class="flex items-start justify-between">
+          <span class="badge border-red-200 bg-red-50 text-red-700">风险信号</span>
+          <span class="text-xs text-muted-fg">来源 · Objective Analysis / Moody's</span>
+        </div>
+        <h3 class="mt-3 text-base font-semibold">⑤ 最大的下行风险：超大规模云厂商放缓 AI 支出</h3>
+        <p class="mt-2 text-sm leading-6 text-muted-fg">
+          会议专门设立议题
+          <em class="text-fg not-italic font-medium">"What Happens When Hyperscalers Slow Their AI Spending?"</em>——
+          Objective Analysis 提醒：当前内存短缺与天价正把芯片市场推至"天文数字"，
+          但这场消费狂潮不会永远持续，结束时市场将经历剧烈调整。
+          Moody's 同时强调 2025 年起关税、网络攻击与供应链重塑构成新的系统性风险。
+          <span class="font-medium text-fg">这构成了当前半导体估值最重要的对冲逻辑</span>。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 数据画像 ============ -->
+<section id="data" class="section-anchor border-b border-border">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <div class="text-xs font-medium text-muted-fg">03 · 数据画像</div>
+    <h2 class="mt-2 prose-h2">议程结构揭示了什么</h2>
+    <p class="mt-2 text-sm text-muted-fg max-w-2xl">议程的"重心"本身就是信号：厂商在哪个方向投入演讲资源，往往预示着资本与研发的真实流向。</p>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-2">
+      <!-- 图1：技术Track分布 -->
+      <div class="card p-6">
+        <div class="flex items-baseline justify-between">
+          <h3 class="prose-h3">议程按技术专题分布</h3>
+          <span class="text-xs text-muted-fg">Top 12 of 23</span>
+        </div>
+        <p class="mt-1 text-xs text-muted-fg">CXL、AI/ML 应用、SSD 技术位列前三——印证"互连 + AI + 存储"是当前产业三大主战场。</p>
+        <div class="mt-5 h-[360px]">
+          <canvas id="trackChart"></canvas>
+        </div>
+      </div>
+      <!-- 图2：演讲者板块分布 -->
+      <div class="card p-6">
+        <div class="flex items-baseline justify-between">
+          <h3 class="prose-h3">登台机构按板块分布</h3>
+          <span class="text-xs text-muted-fg">按演讲者归属统计</span>
+        </div>
+        <p class="mt-1 text-xs text-muted-fg">内存原厂（三星/SK/美光）与 NAND/SSD 厂商合计占据最大话语权，分析机构席位显著，反映产业正处于"重定价"共识形成期。</p>
+        <div class="mt-5 h-[360px]">
+          <canvas id="sectorChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 card p-6">
+      <h3 class="prose-h3">主旨演讲全景（14 场）</h3>
+      <p class="mt-1 text-xs text-muted-fg">主旨演讲的演讲机构构成是判断产业风向最直接的指标。下表按时间顺序列出全部主旨演讲及其金融意义归类。</p>
+      <div class="mt-5 overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-border text-left text-xs uppercase tracking-wide text-muted-fg">
+              <th class="py-2 pr-4 font-medium">时间</th>
+              <th class="py-2 pr-4 font-medium">主旨标题</th>
+              <th class="py-2 pr-4 font-medium">演讲机构</th>
+              <th class="py-2 font-medium">归类</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/4 11:10</td><td class="py-2.5 pr-4">用闪存与 SSD 重新定义 AI 时代的数据中心存储</td><td class="py-2.5 pr-4">KIOXIA + NVIDIA</td><td class="py-2.5"><span class="badge border-border bg-muted">NAND/SSD</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/4 11:40</td><td class="py-2.5 pr-4">内存的必然性：三星如何构建 AI 时代的基石</td><td class="py-2.5 pr-4">Samsung</td><td class="py-2.5"><span class="badge border-border bg-muted">内存原厂</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/4 13:20</td><td class="py-2.5 pr-4">Agentic AI 时代的分层内存编排</td><td class="py-2.5 pr-4">SK hynix</td><td class="py-2.5"><span class="badge border-border bg-muted">分层内存</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/4 13:50</td><td class="py-2.5 pr-4">AI 存储的未来：从硅创新到超大规模效率</td><td class="py-2.5 pr-4">FADU + Sandisk</td><td class="py-2.5"><span class="badge border-border bg-muted">SSD控制器</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/4 14:20</td><td class="py-2.5 pr-4">存储驱动 Agentic AI 无处不在</td><td class="py-2.5 pr-4">Silicon Motion + MediaTek</td><td class="py-2.5"><span class="badge border-border bg-muted">SSD控制器</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/4 14:50</td><td class="py-2.5 pr-4">内存墙已至：AI 在推理时代如何记忆</td><td class="py-2.5 pr-4">Micron</td><td class="py-2.5"><span class="badge border-border bg-muted">内存原厂</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/5 11:00</td><td class="py-2.5 pr-4">NEO.AI：解决 AI 的 HBM 与 SRAM 两大内存瓶颈</td><td class="py-2.5 pr-4">NEO Semiconductor</td><td class="py-2.5"><span class="badge border-border bg-muted">新兴内存</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/5 11:40</td><td class="py-2.5 pr-4">NAND：AI 时代多功能的可扩展基石</td><td class="py-2.5 pr-4">Sandisk</td><td class="py-2.5"><span class="badge border-border bg-muted">NAND/SSD</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/5 13:20</td><td class="py-2.5 pr-4">扩展 AI 数据管线的内存解决方案</td><td class="py-2.5 pr-4">ScaleFlux + NVIDIA</td><td class="py-2.5"><span class="badge border-border bg-muted">存储初创</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/5 13:50</td><td class="py-2.5 pr-4">AI 如何变革内存与存储</td><td class="py-2.5 pr-4">Microchip</td><td class="py-2.5"><span class="badge border-border bg-muted">半导体</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/5 14:20</td><td class="py-2.5 pr-4">边缘智能：存储代工模式驱动</td><td class="py-2.5 pr-4">Longsys</td><td class="py-2.5"><span class="badge border-border bg-muted">存储</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/5 14:50</td><td class="py-2.5 pr-4">AI 的意外架构</td><td class="py-2.5 pr-4">Marvell</td><td class="py-2.5"><span class="badge border-border bg-muted">半导体</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/6 11:00</td><td class="py-2.5 pr-4">NVIDIA 专场：平衡内存与存储以运营大规模 AI 工厂</td><td class="py-2.5 pr-4">NVIDIA + Micron + KIOXIA + Samsung + Pure</td><td class="py-2.5"><span class="badge border-border bg-muted">GPU/系统</span></td></tr>
+            <tr class="hover:bg-muted/40"><td class="py-2.5 pr-4 text-muted-fg whitespace-nowrap">8/6 15:25</td><td class="py-2.5 pr-4">闭幕主旨：AI 内存压缩与量化</td><td class="py-2.5 pr-4">ZeroPoint + Google DeepMind</td><td class="py-2.5"><span class="badge border-border bg-muted">压缩技术</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 亮点议程深度解读 ============ -->
+<section id="spotlight" class="section-anchor border-b border-border bg-muted/30">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <div class="text-xs font-medium text-muted-fg">04 · 亮点议程</div>
+    <h2 class="mt-2 prose-h2">五场值得重点解读的议程</h2>
+    <p class="mt-2 text-sm text-muted-fg max-w-2xl">从全部议程中挑选出对资本市场信息量最大、最能代表产业拐点的五场，逐场展开。</p>
+
+    <div class="mt-8 space-y-6">
+
+      <!-- 亮点1 -->
+      <article class="card overflow-hidden">
+        <div class="grid md:grid-cols-[200px_1fr]">
+          <div class="bg-fg p-6 text-primary-fg flex flex-col justify-between">
+            <div>
+              <div class="text-xs opacity-70">SPOTLIGHT 01</div>
+              <div class="mt-2 text-lg font-semibold leading-tight">内存超级周期 2026–2028</div>
+            </div>
+            <div class="mt-6 text-xs opacity-80">
+              <div>Aug 4 · 09:50</div>
+              <div class="mt-1">Business Strategies &amp; Memory Markets</div>
+              <div class="mt-3">演讲：TrendForce</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="prose-h3">Bridging the Structural Gap from Consumer to AI Dominance</h3>
+            <p class="mt-3 text-sm leading-7 text-muted-fg">
+              TrendForce 提出：进入 2026 年，内存市场正经历一场根本性"解耦"——
+              传统由 PC 与智能手机驱动的周期，正被以 AI 基础设施为中心的
+              <span class="font-medium text-fg">结构性超级周期</span>取代。
+              核心是 <span class="font-medium text-fg">"结构性缺口"</span>：2026–2028 年，
+              旧有产能正被改造用于 HBM4/4e 与超高密度 NAND，
+              形成持续的供给侧瓶颈。
+            </p>
+            <div class="mt-4 grid gap-3 sm:grid-cols-3">
+              <div class="rounded-md border border-border bg-muted/40 p-3">
+                <div class="text-xs text-muted-fg">关键论点一</div>
+                <div class="mt-1 text-sm">低利润消费级 DRAM/NAND 晶圆转向高价值 AI 组件</div>
+              </div>
+              <div class="rounded-md border border-border bg-muted/40 p-3">
+                <div class="text-xs text-muted-fg">关键论点二</div>
+                <div class="mt-1 text-sm">HBM4（2048-bit）与先进 NAND 堆叠限制全球 bit 增长</div>
+              </div>
+              <div class="rounded-md border border-border bg-muted/40 p-3">
+                <div class="text-xs text-muted-fg">关键论点三</div>
+                <div class="mt-1 text-sm">市场进入"产能约束主导"而非"需求波动主导"的新阶段</div>
+              </div>
+            </div>
+            <div class="mt-4 rounded-md border-l-2 border-fg bg-muted/30 p-3 text-sm">
+              <span class="font-medium text-fg">金融含义：</span>
+              此判断若成立，意味着本轮内存涨价具有结构性而非周期性，
+              <span class="font-medium">内存原厂（三星、SK 海力士、美光）的盈利能力与估值中枢有持续上移空间</span>；
+              同时下游（PC、手机、汽车整机）的成本端压力将持续。
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 亮点2 -->
+      <article class="card overflow-hidden">
+        <div class="grid md:grid-cols-[200px_1fr]">
+          <div class="bg-fg p-6 text-primary-fg flex flex-col justify-between">
+            <div>
+              <div class="text-xs opacity-70">SPOTLIGHT 02</div>
+              <div class="mt-2 text-lg font-semibold leading-tight">内存墙已至</div>
+            </div>
+            <div class="mt-6 text-xs opacity-80">
+              <div>Aug 4 · 14:50</div>
+              <div class="mt-1">Keynote · 主旨演讲</div>
+              <div class="mt-3">演讲：Micron · Jeremy Werner</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="prose-h3">The Memory Wall Is Here: How AI Remembers in the Inference Era</h3>
+            <p class="mt-3 text-sm leading-7 text-muted-fg">
+              美光提出：AI 已进入推理时代，瓶颈已从算力转移到
+              <span class="font-medium text-fg">"如何高效地移动、存储与访问上下文"</span>。
+              引入"温度区"框架——从靠近加速器的热数据，到温内存扩展，再到冷存储——
+              串联起 HBM、DRAM 与数据中心 SSD 的全栈组合。
+            </p>
+            <div class="mt-4 rounded-md border-l-2 border-fg bg-muted/30 p-3 text-sm">
+              <span class="font-medium text-fg">金融含义：</span>
+              美光作为 HBM 三巨头之一，明确将自身定位为"AI 推理时代的内存全栈供应商"。
+              这是<span class="font-medium">对美光估值叙事的重要强化</span>——
+              其产品矩阵（HBM + DRAM + 数据中心 SSD）恰好覆盖"温度分层"的每一层，
+              在推理需求爆发期具有组合优势。
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 亮点3 -->
+      <article class="card overflow-hidden">
+        <div class="grid md:grid-cols-[200px_1fr]">
+          <div class="bg-fg p-6 text-primary-fg flex flex-col justify-between">
+            <div>
+              <div class="text-xs opacity-70">SPOTLIGHT 03</div>
+              <div class="mt-2 text-lg font-semibold leading-tight">分层内存与 HBF</div>
+            </div>
+            <div class="mt-6 text-xs opacity-80">
+              <div>Aug 4 · 13:20</div>
+              <div class="mt-1">Keynote · 主旨演讲</div>
+              <div class="mt-3">演讲：SK hynix</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="prose-h3">Orchestrating Efficient AI Infrastructure through Tiered Memory</h3>
+            <p class="mt-3 text-sm leading-7 text-muted-fg">
+              SK 海力士提出，Agentic AI 使 token 消耗以前所未有的速度增长，
+              系统性能的主导因素从纯算力转向
+              <span class="font-medium text-fg">数据移动与内存/存储效率</span>。
+              方案是在传统 G1/G2/G3 内存层级之外引入 G0.5、G1.5、G2.5 新层——
+              分别由 3D 堆叠 DRAM、<span class="font-medium text-fg">高带宽闪存（HBF）</span>、
+              CXL 内存池化实现。
+            </p>
+            <div class="mt-4 rounded-md border-l-2 border-fg bg-muted/30 p-3 text-sm">
+              <span class="font-medium text-fg">金融含义：</span>
+              SK 海力士同时布局 HBM（G1）与 HBF（G1.5），
+              <span class="font-medium">在"下一层内存"上先发优势明显</span>。
+              HBF 路线一旦量产，将打开继 HBM 之后的新增长曲线——
+              这是跟踪 SK 海力士长期估值的关键变量。
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 亮点4 -->
+      <article class="card overflow-hidden">
+        <div class="grid md:grid-cols-[200px_1fr]">
+          <div class="bg-fg p-6 text-primary-fg flex flex-col justify-between">
+            <div>
+              <div class="text-xs opacity-70">SPOTLIGHT 04</div>
+              <div class="mt-2 text-lg font-semibold leading-tight">QLC vs HDD 替代拐点</div>
+            </div>
+            <div class="mt-6 text-xs opacity-80">
+              <div>Aug 5 · 08:55</div>
+              <div class="mt-1">Flash Technology</div>
+              <div class="mt-3">演讲：IBM · Dave Verburg</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="prose-h3">Near-line drives vs QLC … what about Near-line killer?</h3>
+            <p class="mt-3 text-sm leading-7 text-muted-fg">
+              IBM 指出 AI 推理生成海量温/冷数据，导致近线 HDD 严重短缺（交期 &gt; 52 周），
+              叠加 HDD 产能扩张有限，迫使超大规模厂商<span class="font-medium text-fg">即便对冷数据层也加速采用高容量 SSD</span>。
+              演讲直接提出"是否存在近线杀手"的命题——
+              即 QLC 容量增长到一定程度后，是否将 HDD 系统性挤出。
+            </p>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <div class="rounded-md border border-border bg-muted/40 p-3">
+                <div class="text-xs text-muted-fg">利好方</div>
+                <div class="mt-1 text-sm">QLC 阵营：铠侠、闪迪、Solidigm、三星</div>
+              </div>
+              <div class="rounded-md border border-border bg-red-50 p-3">
+                <div class="text-xs text-red-700">承压方</div>
+                <div class="mt-1 text-sm">HDD 厂商：希捷、西部数据、东芝（短期短缺受益，长期被替代）</div>
+              </div>
+            </div>
+            <div class="mt-4 rounded-md border-l-2 border-fg bg-muted/30 p-3 text-sm">
+              <span class="font-medium text-fg">金融含义：</span>
+              这是 HDD 与 SSD 阵营长期估值分化的关键命题。
+              短期 HDD 厂商因短缺而景气，但
+              <span class="font-medium">市场正在为"QLC 越过交叉点"定价</span>——
+              该交叉点何时到来，是希捷/西数估值的核心变量。
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 亮点5 -->
+      <article class="card overflow-hidden">
+        <div class="grid md:grid-cols-[200px_1fr]">
+          <div class="bg-fg p-6 text-primary-fg flex flex-col justify-between">
+            <div>
+              <div class="text-xs opacity-70">SPOTLIGHT 05</div>
+              <div class="mt-2 text-lg font-semibold leading-tight">AI 支出放缓的风险</div>
+            </div>
+            <div class="mt-6 text-xs opacity-80">
+              <div>Aug 4 · 10:20</div>
+              <div class="mt-1">Business Strategies &amp; Memory Markets</div>
+              <div class="mt-3">演讲：Objective Analysis · Jim Handy</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="prose-h3">What Happens When Hyperscalers Slow Their AI Spending?</h3>
+            <p class="mt-3 text-sm leading-7 text-muted-fg">
+              Objective Analysis 提醒：当前的内存短缺与天价正把芯片市场推至"天文数字"，
+              <span class="font-medium text-fg">但这场消费狂潮不会永远持续</span>，
+              当它结束时，芯片市场将经历剧烈变化。
+              演讲以过往半导体周期的教训，推演明天芯片市场的走向。
+            </p>
+            <div class="mt-4 rounded-md border-l-2 border-red-400 bg-red-50/50 p-3 text-sm">
+              <span class="font-medium text-red-700">风险含义：</span>
+              这是本次会议对当前 AI/半导体估值最重要的对冲提示。
+              <span class="font-medium">"结构性超级周期"叙事的反面，是"AI 资本开支见顶回落的周期性调整"</span>。
+              投资内存/存储板块需同时为这两种情景定价。
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 技术主题热度 ============ -->
+<section id="themes" class="section-anchor border-b border-border">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <div class="text-xs font-medium text-muted-fg">05 · 技术主题热度</div>
+    <h2 class="mt-2 prose-h2">议程关键词提及频次</h2>
+    <p class="mt-2 text-sm text-muted-fg max-w-2xl">对全部议程文本进行关键词统计，频次反映产业资源与资本的真实投入方向。</p>
+
+    <div class="mt-8 card p-6">
+      <div class="h-[460px]">
+        <canvas id="themeChart"></canvas>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-4 md:grid-cols-3">
+      <div class="card p-5">
+        <div class="text-xs text-muted-fg">主线</div>
+        <div class="mt-1 font-semibold">AI 推理 · KV Cache · Agentic AI</div>
+        <p class="mt-2 text-xs text-muted-fg leading-5">三者构成一组叙事：推理成主战场，KV Cache 成核心瓶颈，Agentic AI 拉动持久化上下文需求。直接利好全内存栈。</p>
+      </div>
+      <div class="card p-5">
+        <div class="text-xs text-muted-fg">互连层</div>
+        <div class="mt-1 font-semibold">CXL · RDMA · UALink</div>
+        <p class="mt-2 text-xs text-muted-fg leading-5">CXL 议程数全场第一（36），印证"内存池化"是下一代数据中心架构核心。Astera Labs、Marvell、Intel 深度参与。</p>
+      </div>
+      <div class="card p-5">
+        <div class="text-xs text-muted-fg">新兴层</div>
+        <div class="mt-1 font-semibold">HBF · PNM/PIM · ReRAM/MRAM</div>
+        <p class="mt-2 text-xs text-muted-fg leading-5">HBF 是 HBM 之后的下一层；存内计算（PIM/PNM）被 SK 海力士/三星力推；ReRAM 宣布进入量产爬坡。三者是中长期题材。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 风险与警示 ============ -->
+<section id="risks" class="section-anchor border-b border-border bg-muted/30">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <div class="text-xs font-medium text-muted-fg">06 · 风险与警示</div>
+    <h2 class="mt-2 prose-h2">不可忽视的下行变量</h2>
+    <p class="mt-2 text-sm text-muted-fg max-w-2xl">会议在传递乐观信号的同时，也明确暴露了若干风险点。理性投资需同时持有正反两面的剧本。</p>
+
+    <div class="mt-8 grid gap-4 md:grid-cols-2">
+      <div class="card p-5 border-l-4 border-l-red-400">
+        <div class="flex items-center gap-2">
+          <span class="badge border-red-200 bg-red-50 text-red-700">周期风险</span>
+          <span class="text-xs text-muted-fg">Objective Analysis</span>
+        </div>
+        <h4 class="mt-2 font-semibold text-sm">AI 资本开支见顶回落</h4>
+        <p class="mt-1.5 text-xs text-muted-fg leading-5">超大规模云厂商放缓 AI 支出时，芯片市场将剧烈调整。当前内存天价建立在持续投入假设之上，该假设一旦松动，估值回调幅度可能很大。</p>
+      </div>
+      <div class="card p-5 border-l-4 border-l-amber-400">
+        <div class="flex items-center gap-2">
+          <span class="badge border-amber-200 bg-amber-50 text-amber-700">地缘风险</span>
+          <span class="text-xs text-muted-fg">Moody's / Yole</span>
+        </div>
+        <h4 class="mt-2 font-semibold text-sm">关税、供应链与中国的崛起</h4>
+        <p class="mt-1.5 text-xs text-muted-fg leading-5">2025 年起关税与网络攻击重塑供应链；中国既是主要消费市场也是新兴供应方，其 DRAM/NAND 崛起是长期竞争变量。</p>
+      </div>
+      <div class="card p-5 border-l-4 border-l-blue-400">
+        <div class="flex items-center gap-2">
+          <span class="badge border-blue-200 bg-blue-50 text-blue-700">结构风险</span>
+          <span class="text-xs text-muted-fg">CTO 圆桌</span>
+        </div>
+        <h4 class="mt-2 font-semibold text-sm">内存墙与能源墙双重夹击</h4>
+        <p class="mt-1.5 text-xs text-muted-fg leading-5">搬移一个字节的能耗可达计算的 1000 倍。数据中心同时撞上带宽与能耗两堵墙——既是成本压力（利空整机），也是能效技术机会（利好液冷、PIM）。</p>
+      </div>
+      <div class="card p-5 border-l-4 border-l-purple-400">
+        <div class="flex items-center gap-2">
+          <span class="badge border-purple-200 bg-purple-50 text-purple-700">技术风险</span>
+          <span class="text-xs text-muted-fg">多场技术演讲</span>
+        </div>
+        <h4 class="mt-2 font-semibold text-sm">内存压缩/量化削弱需求</h4>
+        <p class="mt-1.5 text-xs text-muted-fg leading-5">闭幕主旨（ZeroPoint + Google DeepMind）展示内存可压缩 2–4 倍。若压缩技术普及，可能部分缓解内存短缺，从而压制涨价斜率——这是"硬件涨价"叙事的长期对冲。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 关注清单 ============ -->
+<section id="watchlist" class="section-anchor border-b border-border">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <div class="text-xs font-medium text-muted-fg">07 · 关注清单</div>
+    <h2 class="mt-2 prose-h2">受益与承压板块一览</h2>
+    <p class="mt-2 text-sm text-muted-fg max-w-2xl">基于议程信号整理的板块映射，供跟踪参考。非投资建议。</p>
+
+    <div class="mt-8 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-border text-left text-xs uppercase tracking-wide text-muted-fg">
+            <th class="py-2 pr-4 font-medium">方向</th>
+            <th class="py-2 pr-4 font-medium">板块</th>
+            <th class="py-2 pr-4 font-medium">代表机构</th>
+            <th class="py-2 pr-4 font-medium">驱动逻辑</th>
+            <th class="py-2 font-medium">信号强度</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border">
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-emerald-200 bg-emerald-50 text-emerald-700">受益</span></td>
+            <td class="py-3 pr-4 font-medium">内存原厂</td>
+            <td class="py-3 pr-4 text-muted-fg">三星 · SK 海力士 · 美光</td>
+            <td class="py-3 pr-4 text-muted-fg">结构性超级周期 · HBM/HBF 涨价</td>
+            <td class="py-3"><span class="badge border-fg bg-fg text-primary-fg">极高</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-emerald-200 bg-emerald-50 text-emerald-700">受益</span></td>
+            <td class="py-3 pr-4 font-medium">NAND/SSD 厂商</td>
+            <td class="py-3 pr-4 text-muted-fg">铠侠 · 闪迪 · Solidigm · 西数</td>
+            <td class="py-3 pr-4 text-muted-fg">QLC 替代 HDD · NAND 短缺涨价</td>
+            <td class="py-3"><span class="badge border-fg bg-fg text-primary-fg">极高</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-emerald-200 bg-emerald-50 text-emerald-700">受益</span></td>
+            <td class="py-3 pr-4 font-medium">互联/Chiplet</td>
+            <td class="py-3 pr-4 text-muted-fg">Astera Labs · Broadcom · Marvell</td>
+            <td class="py-3 pr-4 text-muted-fg">CXL(议程第一) · PCIe 8.0 · UALink</td>
+            <td class="py-3"><span class="badge border-emerald-300 bg-emerald-100 text-emerald-800">高</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-emerald-200 bg-emerald-50 text-emerald-700">受益</span></td>
+            <td class="py-3 pr-4 font-medium">SSD 控制器</td>
+            <td class="py-3 pr-4 text-muted-fg">Silicon Motion · Phison · FADU</td>
+            <td class="py-3 pr-4 text-muted-fg">AI 工作负载 · KV cache 存储 · 端侧 AI</td>
+            <td class="py-3"><span class="badge border-emerald-300 bg-emerald-100 text-emerald-800">高</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-emerald-200 bg-emerald-50 text-emerald-700">受益</span></td>
+            <td class="py-3 pr-4 font-medium">服务器/系统</td>
+            <td class="py-3 pr-4 text-muted-fg">超微 · HPE · Dell · Wiwynn</td>
+            <td class="py-3 pr-4 text-muted-fg">AI 工厂扩容 · 内存/存储消费主体</td>
+            <td class="py-3"><span class="badge border-emerald-300 bg-emerald-100 text-emerald-800">高</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-amber-200 bg-amber-50 text-amber-700">分化</span></td>
+            <td class="py-3 pr-4 font-medium">HDD 厂商</td>
+            <td class="py-3 pr-4 text-muted-fg">希捷 · 西数 · 东芝</td>
+            <td class="py-3 pr-4 text-muted-fg">短期短缺受益，长期被 QLC 替代</td>
+            <td class="py-3"><span class="badge border-amber-300 bg-amber-100 text-amber-800">中</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-emerald-200 bg-emerald-50 text-emerald-700">受益</span></td>
+            <td class="py-3 pr-4 font-medium">新兴内存</td>
+            <td class="py-3 pr-4 text-muted-fg">Weebit Nano · NEO Semi · SEMRON</td>
+            <td class="py-3 pr-4 text-muted-fg">ReRAM 量产爬坡 · HBM 替代路径</td>
+            <td class="py-3"><span class="badge border-sky-300 bg-sky-100 text-sky-800">中长期</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-emerald-200 bg-emerald-50 text-emerald-700">受益</span></td>
+            <td class="py-3 pr-4 font-medium">液冷/能效</td>
+            <td class="py-3 pr-4 text-muted-fg">Vertiv · 液冷供应链</td>
+            <td class="py-3 pr-4 text-muted-fg">DLC 成标配 · 能源墙倒逼</td>
+            <td class="py-3"><span class="badge border-sky-300 bg-sky-100 text-sky-800">中长期</span></td>
+          </tr>
+          <tr class="hover:bg-muted/40">
+            <td class="py-3 pr-4"><span class="badge border-red-200 bg-red-50 text-red-700">承压</span></td>
+            <td class="py-3 pr-4 font-medium">下游整机</td>
+            <td class="py-3 pr-4 text-muted-fg">PC · 手机 · 汽车整机</td>
+            <td class="py-3 pr-4 text-muted-fg">内存/存储成本上行挤压毛利</td>
+            <td class="py-3"><span class="badge border-red-300 bg-red-100 text-red-800">中</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 grid gap-4 md:grid-cols-2">
+      <div class="card p-5">
+        <div class="text-xs text-muted-fg">未来 3–5 年最值得跟踪的成长主题</div>
+        <ol class="mt-2 space-y-1.5 text-sm">
+          <li class="flex gap-2"><span class="text-muted-fg">1.</span>QLC SSD 替代 HDD 的"交叉点"何时到来</li>
+          <li class="flex gap-2"><span class="text-muted-fg">2.</span>HBF（高带宽闪存）能否量产并成为继 HBM 后的新增长极</li>
+          <li class="flex gap-2"><span class="text-muted-fg">3.</span>CXL 内存池化在超大规模云的真实落地节奏</li>
+          <li class="flex gap-2"><span class="text-muted-fg">4.</span>UFS 5.0 推动的端侧 AI（手机/PC）放量</li>
+          <li class="flex gap-2"><span class="text-muted-fg">5.</span>内存压缩/量化技术对硬件涨价斜率的对冲效应</li>
+        </ol>
+      </div>
+      <div class="card p-5 bg-muted/30">
+        <div class="text-xs text-muted-fg">一句话总结</div>
+        <p class="mt-2 text-sm leading-6 text-fg">
+          会议传达的最核心金融信号是——<span class="font-semibold">AI 正把内存与存储行业从"周期品"重定价为"结构性稀缺的战略资源"</span>。
+          2026–2028 年内存/存储大概率维持高景气与高价格；
+          最大风险是超大规模云厂商 AI 资本开支放缓引发的周期性回落，以及中国供应商崛起带来的长期竞争。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 页脚 ============ -->
+<footer class="bg-fg text-primary-fg">
+  <div class="mx-auto max-w-6xl px-4 py-10">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <div class="text-sm font-semibold">FMS 2026 深度分析报告</div>
+        <div class="mt-1 text-xs opacity-70">基于公开议程文本的二次分析 · 仅供研究参考 · 非投资建议</div>
+      </div>
+      <div class="text-xs opacity-70">
+        <div>数据来源：terrapinn.com/conference/future-memory-storage/agenda.stm</div>
+        <div class="mt-1">分析范围：338 个议程项 · 14 场主旨演讲 · 23 个技术专题</div>
+      </div>
+    </div>
+    <hr class="my-6 border-white/10">
+    <div class="text-xs opacity-60">
+      本报告由议程文本自动解析与人工解读结合生成。涉及的市场判断归因于会议演讲机构（TrendForce、IDC、Yole Group、Objective Analysis 等），
+      不构成对任何证券的买卖建议。投资有风险，决策需独立判断。
+    </div>
+  </div>
+</footer>
+
+<!-- ============ 图表脚本 ============ -->
+<script>
+const FONT_FAMILY = 'ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+const FG = 'hsl(240 10% 3.9%)';
+const MUTED = 'hsl(240 3.8% 46.1%)';
+const GRID = 'hsl(240 5.9% 90%)';
+Chart.defaults.font.family = FONT_FAMILY;
+Chart.defaults.font.size = 12;
+Chart.defaults.color = MUTED;
+
+// 颜色调色板（中性专业风）
+const PALETTE = [
+  'hsl(240 5.9% 10%)',   // 主色
+  'hsl(220 70% 50%)',
+  'hsl(160 60% 40%)',
+  'hsl(30 80% 50%)',
+  'hsl(280 50% 50%)',
+  'hsl(0 70% 55%)',
+  'hsl(190 60% 42%)',
+  'hsl(120 45% 42%)',
+  'hsl(45 75% 48%)',
+  'hsl(330 55% 52%)',
+  'hsl(260 50% 55%)',
+  'hsl(200 55% 45%)',
+];
+
+// 图1：技术Track分布（水平条形）
+const trackCtx = document.getElementById('trackChart');
+new Chart(trackCtx, {
+  type: 'bar',
+  data: {
+    labels: ['CXL','AI & ML 应用','SSD 技术','数据中心存储','DRAM','商业策略与市场','闪存技术','测试与性能','其他内存技术','行业组织','主旨演讲','网络与连接'],
+    datasets: [{
+      label: '议程数',
+      data: [36,33,32,28,26,16,15,14,14,13,13,13],
+      backgroundColor: PALETTE[0],
+      borderRadius: 4,
+      barThickness: 16,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: FG, titleColor: '#fff', bodyColor: '#fff', padding: 10 } },
+    scales: {
+      x: { grid: { color: GRID }, ticks: { color: MUTED }, beginAtZero: true },
+      y: { grid: { display: false }, ticks: { color: FG, font: { size: 11 } } }
+    }
+  }
+});
+
+// 图2：板块分布（环形/甜甜圈）
+const sectorCtx = document.getElementById('sectorChart');
+new Chart(sectorCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['内存原厂','NAND/SSD','超大规模云','半导体(逻辑)','综合/系统','CPU/加速器','GPU/加速器','SSD控制器','存储初创','存储软件','分析机构','新兴内存','互联芯片','服务器','电源/模拟'],
+    datasets: [{
+      data: [57,42,27,25,21,19,10,18,15,13,13,8,7,5,5],
+      backgroundColor: PALETTE,
+      borderColor: '#fff',
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { boxWidth: 10, boxHeight: 10, padding: 8, font: { size: 10 }, color: FG }
+      },
+      tooltip: { backgroundColor: FG, titleColor: '#fff', bodyColor: '#fff', padding: 10 }
+    }
+  }
+});
+
+// 图3：主题热度（水平条形，渐变色）
+const themeCtx = document.getElementById('themeChart');
+const themeData = [
+  ['AI 推理',55],['CXL',40],['HBM 高带宽内存',30],['数据安全/后量子',28],['KV Cache',27],
+  ['内存池化',24],['QLC NAND',22],['太空AI',22],['Agentic AI',17],['RDMA/网络互联',15],
+  ['UFS/移动端侧',12],['近内存计算 PNM/PIM',11],['汽车存储',8],['RAG检索增强',7],
+  ['量子计算',7],['ReRAM/MRAM',7],['HBF高带宽闪存',6]
+];
+// 按值生成颜色（热度越高越深）
+const maxVal = 55;
+const themeColors = themeData.map((_,i) => {
+  const v = themeData[i][1];
+  const t = v / maxVal; // 0..1
+  // 从浅灰蓝(低) 到 深墨(高)
+  const l = 75 - t * 60; // 75 -> 15
+  return `hsl(230 15% ${l}%)`;
+});
+new Chart(themeCtx, {
+  type: 'bar',
+  data: {
+    labels: themeData.map(d=>d[0]),
+    datasets: [{
+      label: '议程提及次数',
+      data: themeData.map(d=>d[1]),
+      backgroundColor: themeColors,
+      borderRadius: 3,
+      barThickness: 14,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: FG, titleColor: '#fff', bodyColor: '#fff', padding: 10 } },
+    scales: {
+      x: { grid: { color: GRID }, ticks: { color: MUTED }, beginAtZero: true },
+      y: { grid: { display: false }, ticks: { color: FG, font: { size: 11 } } }
+    }
+  }
+});
+
+// 导航高亮
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('section[id]');
+const navObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id = e.target.id;
+      navLinks.forEach(l=> l.classList.toggle('active', l.getAttribute('href') === '#'+id));
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+sections.forEach(s=> navObserver.observe(s));
+</script>
+</body>
+</html>
